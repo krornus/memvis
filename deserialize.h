@@ -29,7 +29,7 @@ typedef struct {
   unsigned long len;
   unsigned long offset;
   int order;
-  char bytes[];
+  char *bytes;
 } Serializable;
 
 typedef struct {
@@ -42,5 +42,5 @@ typedef struct {
 void deserialize(Serializable *ser, Element *values, int length);
 void srewind(Serializable *ser);
 void sseek(Serializable *ser, long amount, int whence);
-void sopen(FILE *fp, size_t fsize, Serializable *ser);
+int smap(char *fn, Serializable *ser);
 size_t fsize(FILE *fp);

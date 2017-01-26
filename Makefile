@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-I. -g
-DEPS=deserialize.h
-OBJ=elf_loader.o deserialize.o 
+DEPS=deserialize.h hash.h
+OBJ=elf_loader.o deserialize.o hash.o
 
 ODIR=obj
 

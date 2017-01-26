@@ -1,3 +1,5 @@
+#include "uthash.h"
+
 #define ELF_MAGIC "\x7f\x45\x4c\x46"
 /* Number of elements in ELF header */
 #define N_EHEADER 14
@@ -173,7 +175,14 @@ typedef struct {
 } Elf64_Phdr;
 
 typedef struct {
+    char *name;
+    Elf32_Shdr section;
+    UT_hash_handle hh;
+} Section;
+
+typedef struct {
   Elf32_Ehdr header;
+  Section *sections;
 } Elf32;
 
 int parse_elf_header(Serializable *prg);
@@ -182,3 +191,4 @@ int load_32bit_eheader(Serializable *prg, Elf32_Ehdr *eheader);
 int load_32bit_pheader(Serializable *prg, Elf32_Phdr *pheader);
 int load_32bit_sheader(Serializable *prg, Elf32_Shdr *sheader);
 char *get_section_name(Serializable *prg, Elf32_Shdr strtab, unsigned long long offset);
+Elf32_Shdr get_section(char *key);
