@@ -8,14 +8,15 @@ Tool for interfacing with ELF files
     Elf32_Ehdr *eheader; /* Struct to hold data */
     size_t size; /* The size of the raw data you wish to deserialize */
     
-    ser = (Serializable *) malloc(sizeof(Serializable) + size);
+    ser = (Serializable *) malloc(sizeof(Serializable));
     eheader = (Elf32_Ehdr) malloc(sizeof(Elf32_Ehdr);
     
-    /* Open the file */
-    fp = fopen(argv[1], "r");
-    
-    /* Load for serialization */
-    sopen(fp, size, ser);
+    /* mmap the file */
+    if(0 != smap(argv[1], ser))
+    {
+        fprintf(stderr, "failed to map %s\n", argv[1]);
+        return -1;
+    }
     
     /* set the endianness (defaults to little) */
     ser->order = LITTLE_ENDIAN;
@@ -36,6 +37,7 @@ Tool for interfacing with ELF files
         create_element(prg->order, *eheader, e_shentsize),
         create_element(prg->order, *eheader, e_shnum),
         create_element(prg->order, *eheader, e_shstrndx)
-  };
+    };
   
-  deserialize(prg, header_elements, N_EHEADER);
+    deserialize(prg, header_elements, N_EHEADER);
+```
