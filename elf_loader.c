@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <deserialize.h>
 #include <string.h>
 #include <errno.h>
-#include "elf_loader.h"
 #include "hash.h"
+#include "deserialize.h"
+#include "elf_loader.h"
 
 
 int main(int argc, char **argv)
@@ -31,15 +31,29 @@ int main(int argc, char **argv)
     ser->order = (ser->bytes[EI_DATA] == ELFDATA2MSB ? BIG_ENDIAN : LITTLE_ENDIAN);
 
     elf32 = (Elf32 *) malloc(sizeof(Elf32));
-
+    
     if(load_32bit(ser, elf32) != 0)
     {
         return -1;
     }
 
     /* Retrieve global offset table */
-    Elf32_Shdr sect = get_section(".got");
-    printf("Global offset table section header entry size: %lu\n", sect.sh_entsize);
+    Elf32_Shdr *sect = get_section(elf32->hash, ".text");
+    if(NULL==sect)
+    {
+        fprintf(stderr, "could not load section\n");
+        exit(-1);
+    }
+
+    for(int i = sect->sh_offset; i < sect->sh_offset + sect->sh_size; i++)
+    {
+        if(i % 10 == 0 && i > 0)
+        {
+            printf("\n");
+        }
+
+        printf("%01x", (unsigned char)ser->bytes[i]);
+    }
 
     /* TODO Implement sunmap function to unmap the serializable data */
     free(elf32);
@@ -52,7 +66,8 @@ int load_32bit(Serializable *prg, Elf32 *elf)
     Elf32_Phdr pheader;
     Elf32_Shdr *sections, strtab, text, symtab;
 
-    elf->sections = NULL;
+    /* Must set dict to null */
+    elf->hash = NULL;
 
     /* Get ELF header */
     if(load_32bit_eheader(prg, &eheader) != 0)
@@ -86,8 +101,9 @@ int load_32bit(Serializable *prg, Elf32 *elf)
     {
         char *name;
         name = get_section_name(prg, strtab, sections[i].sh_name);
-        hset(name, sections+i);
+        hset(&elf->hash, name, sections+i);
     }
+
 
     return 0;
 }
@@ -97,11 +113,12 @@ char *get_section_name(Serializable *prg, Elf32_Shdr strtab, unsigned long long 
     return prg->bytes + strtab.sh_offset + offset;
 }
 
-Elf32_Shdr get_section(char *name)
+Elf32_Shdr *get_section(struct Hentry *hash, char *name)
 {
     Elf32_Shdr *sect;
-    sect = (Elf32_Shdr *)hget(name);
-    return *sect;
+    sect = (Elf32_Shdr *)hget(hash, name);
+
+    return sect;
 }
 
 int load_32bit_eheader(Serializable *prg, Elf32_Ehdr *eheader)
