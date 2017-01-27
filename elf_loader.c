@@ -143,20 +143,20 @@ int load_32bit_eheader(Serializable *prg, Elf32_Ehdr *eheader)
 	}  
 
 	Element header_elements[] = {
-		create_element(prg->order, *eheader, e_ident),
-		create_element(prg->order, *eheader, e_type),
-		create_element(prg->order, *eheader, e_machine),
-		create_element(prg->order, *eheader, e_version),
-		create_element(prg->order, *eheader, e_entry),
-		create_element(prg->order, *eheader, e_phoff),
-		create_element(prg->order, *eheader, e_shoff),
-		create_element(prg->order, *eheader, e_flags),
-		create_element(prg->order, *eheader, e_ehsize),
-		create_element(prg->order, *eheader, e_phentsize),
-		create_element(prg->order, *eheader, e_phnum),
-		create_element(prg->order, *eheader, e_shentsize),
-		create_element(prg->order, *eheader, e_shnum),
-		create_element(prg->order, *eheader, e_shstrndx)
+		CREATE_ELEMENT(prg->order, *eheader, e_ident),
+		CREATE_ELEMENT(prg->order, *eheader, e_type),
+		CREATE_ELEMENT(prg->order, *eheader, e_machine),
+		CREATE_ELEMENT(prg->order, *eheader, e_version),
+		CREATE_ELEMENT(prg->order, *eheader, e_entry),
+		CREATE_ELEMENT(prg->order, *eheader, e_phoff),
+		CREATE_ELEMENT(prg->order, *eheader, e_shoff),
+		CREATE_ELEMENT(prg->order, *eheader, e_flags),
+		CREATE_ELEMENT(prg->order, *eheader, e_ehsize),
+		CREATE_ELEMENT(prg->order, *eheader, e_phentsize),
+		CREATE_ELEMENT(prg->order, *eheader, e_phnum),
+		CREATE_ELEMENT(prg->order, *eheader, e_shentsize),
+		CREATE_ELEMENT(prg->order, *eheader, e_shnum),
+		CREATE_ELEMENT(prg->order, *eheader, e_shstrndx)
 	};
 
 	deserialize(prg, header_elements, N_EHEADER);
@@ -173,14 +173,14 @@ int load_32bit_pheader(Serializable *prg, Elf32_Phdr *pheader)
 	}
 
 	Element header_elements[] = {
-		create_element(prg->order, *pheader, p_type),
-		create_element(prg->order, *pheader, p_offset),
-		create_element(prg->order, *pheader, p_vaddr),
-		create_element(prg->order, *pheader, p_paddr),
-		create_element(prg->order, *pheader, p_filesz),
-		create_element(prg->order, *pheader, p_memsz),
-		create_element(prg->order, *pheader, p_flags),
-		create_element(prg->order, *pheader, p_align)
+		CREATE_ELEMENT(prg->order, *pheader, p_type),
+		CREATE_ELEMENT(prg->order, *pheader, p_offset),
+		CREATE_ELEMENT(prg->order, *pheader, p_vaddr),
+		CREATE_ELEMENT(prg->order, *pheader, p_paddr),
+		CREATE_ELEMENT(prg->order, *pheader, p_filesz),
+		CREATE_ELEMENT(prg->order, *pheader, p_memsz),
+		CREATE_ELEMENT(prg->order, *pheader, p_flags),
+		CREATE_ELEMENT(prg->order, *pheader, p_align)
 	};
 
 	deserialize(prg, header_elements, sizeof(header_elements)/sizeof(Element));
@@ -197,16 +197,16 @@ int load_32bit_sheader(Serializable *prg, Elf32_Shdr *sheader)
 	}
 
 	Element header_elements[] = {
-		create_element(prg->order, *sheader, sh_name),
-		create_element(prg->order, *sheader, sh_type),
-		create_element(prg->order, *sheader, sh_flags),
-		create_element(prg->order, *sheader, sh_addr),
-		create_element(prg->order, *sheader, sh_offset),
-		create_element(prg->order, *sheader, sh_size),
-		create_element(prg->order, *sheader, sh_link),
-		create_element(prg->order, *sheader, sh_info),
-		create_element(prg->order, *sheader, sh_addralign),
-		create_element(prg->order, *sheader, sh_entsize)
+		CREATE_ELEMENT(prg->order, *sheader, sh_name),
+		CREATE_ELEMENT(prg->order, *sheader, sh_type),
+		CREATE_ELEMENT(prg->order, *sheader, sh_flags),
+		CREATE_ELEMENT(prg->order, *sheader, sh_addr),
+		CREATE_ELEMENT(prg->order, *sheader, sh_offset),
+		CREATE_ELEMENT(prg->order, *sheader, sh_size),
+		CREATE_ELEMENT(prg->order, *sheader, sh_link),
+		CREATE_ELEMENT(prg->order, *sheader, sh_info),
+		CREATE_ELEMENT(prg->order, *sheader, sh_addralign),
+		CREATE_ELEMENT(prg->order, *sheader, sh_entsize)
 	};
 
 	deserialize(prg, header_elements, sizeof(header_elements)/sizeof(Element));

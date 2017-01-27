@@ -20,7 +20,7 @@
 #define LITTLE_ENDIAN 1234
 #endif
 
-#define create_element(order, parent, member) { \
+#define CREATE_ELEMENT(order, parent, member) { \
   .address = &(parent).member,\
   .size = sizeof((parent).member),\
   .endianness = order\
