@@ -37,24 +37,39 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    /* Retrieve global offset table */
-    Elf32_Shdr *sect = get_section(elf32->hash, ".text");
-    if(NULL==sect)
+
+    /******** .TEXT SECTION *********/
+    Elf32_Shdr *text = get_section(elf32->hash, ".text");
+
+    if(NULL==text)
     {
         fprintf(stderr, "could not load section\n");
         exit(-1);
     }
 
-    for(int i = sect->sh_offset; i < sect->sh_offset + sect->sh_size; i++)
+    for(int i = text->sh_offset; i < text->sh_offset + text->sh_size; i++)
     {
         if(i % 10 == 0 && i > 0)
         {
-            printf("\n");
+            //printf("\n");
         }
 
-        printf("%01x", (unsigned char)ser->bytes[i]);
+        //printf("%01x", (unsigned char)ser->bytes[i]);
+    }
+    /****** END .TEXT SECTION *******/
+
+    /******** SYMTAB *********/
+    Elf32_Shdr *symtab_header = get_section(elf32->hash, ".symtab");
+
+    if(NULL==text)
+    {
+        fprintf(stderr, "could not load section\n");
+        exit(-1);
     }
 
+
+    /****** END SYMTAB .*******/ 
+    
     sunmap(ser);
     destroy_32bit(elf32);
     
@@ -64,9 +79,11 @@ int main(int argc, char **argv)
 
 int load_32bit(Serializable *prg, Elf32 *elf)
 {
+    int nsym;
     Elf32_Ehdr eheader;
     Elf32_Phdr pheader;
-    Elf32_Shdr strtab;
+    Elf32_Shdr strtab_header, *symtab_header;
+    Elf32_Sym sym;
 
     /* Must set dict to null */
     elf->hash = NULL;
@@ -95,16 +112,48 @@ int load_32bit(Serializable *prg, Elf32 *elf)
     }
 
     /* Load string table */
-    strtab = elf->sheaders[eheader.e_shstrndx];
+    strtab_header = elf->sheaders[eheader.e_shstrndx];
 
     /* Loop through sections */
     for(int i = 0; i < eheader.e_shnum; i++)
     {
         char *name;
-        name = get_section_name(prg, strtab, elf->sheaders[i].sh_name);
+        name = get_name(prg, strtab_header, elf->sheaders[i].sh_name);
+        printf("Loaded section '%s'\n", name);
         hset(&elf->hash, name, elf->sheaders+i);
     }
 
+    /* Load symbol table header */
+    symtab_header = get_section(elf->hash, ".symtab");
+
+    if(symtab_header==NULL)
+    {
+        fprintf(stderr, "No symbol table in binary\n");
+        return -1;
+    }
+    else
+    {
+        /* Seek to symtab offset */
+        sseek(prg, symtab_header->sh_offset, SEEK_SET);
+        
+        /* TODO: Better way to do this? */
+        load_32bit_sym(prg, &sym);
+
+        /* Get the number of symbols */
+        nsym = symtab_header->sh_size / (prg->offset - symtab_header->sh_offset);
+        elf->symbols = (Elf32_Sym *) malloc(sizeof(Elf32_Sym)*nsym);
+
+        printf("There are %lu symbols\n", nsym);
+
+        sseek(prg, symtab_header->sh_offset, SEEK_SET);
+
+        for(int i = 0; i < nsym; i++)
+        {
+            load_32bit_sym(prg, elf->symbols + i);
+            if(elf->symbols[i].st_name!=0)
+                printf("Loaded symbol '%s'\n", get_name(prg, strtab_header, elf->symbols[i].st_name));
+        }
+    }
 
     return 0;
 }
@@ -114,7 +163,7 @@ void destroy_32bit(Elf32 *elf)
     free(elf->sheaders);
 }
 
-char *get_section_name(Serializable *prg, Elf32_Shdr strtab, unsigned long long offset)
+char *get_name(Serializable *prg, Elf32_Shdr strtab, unsigned long long offset)
 {
 	return prg->bytes + strtab.sh_offset + offset;
 }
@@ -188,6 +237,22 @@ int load_32bit_pheader(Serializable *prg, Elf32_Phdr *pheader)
 }
 
 
+int load_32bit_sym(Serializable *prg, Elf32_Sym *symbol)
+{
+	Element header_elements[] = {
+		CREATE_ELEMENT(prg->order, *symbol, st_name),
+		CREATE_ELEMENT(prg->order, *symbol, st_value),
+		CREATE_ELEMENT(prg->order, *symbol, st_size),
+		CREATE_ELEMENT(prg->order, *symbol, st_info),
+		CREATE_ELEMENT(prg->order, *symbol, st_other),
+		CREATE_ELEMENT(prg->order, *symbol, st_shndx)
+	};
+
+	deserialize(prg, header_elements, sizeof(header_elements)/sizeof(Element));
+	return 0;
+}
+
+
 int load_32bit_sheader(Serializable *prg, Elf32_Shdr *sheader)
 {
 	if(prg->bytes[EI_CLASS] != ELFCLASS32)
@@ -212,5 +277,3 @@ int load_32bit_sheader(Serializable *prg, Elf32_Shdr *sheader)
 	deserialize(prg, header_elements, sizeof(header_elements)/sizeof(Element));
 	return 0;
 }
-
-

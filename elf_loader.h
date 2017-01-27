@@ -180,9 +180,11 @@ typedef struct {
 	Elf64_Word p_align;
 } Elf64_Phdr;
 
+
 typedef struct {
   Elf32_Ehdr header;
   Elf32_Shdr *sheaders;
+  Elf32_Sym *symbols;
   struct Hentry *hash;
 } Elf32;
 
@@ -192,5 +194,6 @@ void destroy_32bit(Elf32 *elf);
 int load_32bit_eheader(Serializable *prg, Elf32_Ehdr *eheader);
 int load_32bit_pheader(Serializable *prg, Elf32_Phdr *pheader);
 int load_32bit_sheader(Serializable *prg, Elf32_Shdr *sheader);
-char *get_section_name(Serializable *prg, Elf32_Shdr strtab, unsigned long long offset);
+int load_32bit_sym(Serializable *prg, Elf32_Sym *symbol);
+char *get_name(Serializable *prg, Elf32_Shdr strtab, unsigned long long offset);
 Elf32_Shdr *get_section(struct Hentry *hash, char *key);
