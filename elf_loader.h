@@ -43,140 +43,157 @@ typedef unsigned long Elf64_Off;
 typedef unsigned int Elf64_Sword;
 typedef unsigned int Elf64_Word;
 
+/*Text section struct*/
+typedef struct {
+	void* offset;
+	Elf32_Word length;
+} Elf32_s_text;
+
 /* ELF Header structs */
 typedef struct {
-  unsigned char e_ident[EI_NIDENT];
-  Elf32_Half e_type;
-  Elf32_Half e_machine;
-  Elf32_Word e_version;
-  Elf32_Addr e_entry;
-  Elf32_Off e_phoff;
-  Elf32_Off e_shoff;
-  Elf32_Word e_flags;
-  Elf32_Half e_ehsize;
-  Elf32_Half e_phentsize;
-  Elf32_Half e_phnum;
-  Elf32_Half e_shentsize;
-  Elf32_Half e_shnum;
-  Elf32_Half e_shstrndx;
+	unsigned char e_ident[EI_NIDENT];
+	Elf32_Half e_type;
+	Elf32_Half e_machine;
+	Elf32_Word e_version;
+	Elf32_Addr e_entry;
+	Elf32_Off e_phoff;
+	Elf32_Off e_shoff;
+	Elf32_Word e_flags;
+	Elf32_Half e_ehsize;
+	Elf32_Half e_phentsize;
+	Elf32_Half e_phnum;
+	Elf32_Half e_shentsize;
+	Elf32_Half e_shnum;
+	Elf32_Half e_shstrndx;
 } Elf32_Ehdr;
 
 typedef struct {
-  Elf64_Half e_ident[EI_NIDENT];
-  Elf64_Half e_type;
-  Elf64_Word e_machine;
-  Elf64_Addr e_version;
-  Elf64_Off  e_entry;
-  Elf64_Off  e_phoff;
-  Elf64_Word e_shoff;
-  Elf64_Half e_flags;
-  Elf64_Half e_ehsize;
-  Elf64_Half e_phentsize;
-  Elf64_Half e_phnum;
-  Elf64_Half e_shentsize;
-  Elf64_Half e_shnum;
-  Elf64_Half e_shstrndx;
+	Elf64_Half e_ident[EI_NIDENT];
+	Elf64_Half e_type;
+	Elf64_Word e_machine;
+	Elf64_Addr e_version;
+	Elf64_Off  e_entry;
+	Elf64_Off  e_phoff;
+	Elf64_Word e_shoff;
+	Elf64_Half e_flags;
+	Elf64_Half e_ehsize;
+	Elf64_Half e_phentsize;
+	Elf64_Half e_phnum;
+	Elf64_Half e_shentsize;
+	Elf64_Half e_shnum;
+	Elf64_Half e_shstrndx;
 } Elf64_Ehdr;
 
 
 typedef struct {                    
-  Elf32_Word sh_name;
-  Elf32_Word sh_type;
-  Elf32_Word sh_flags;
-  Elf32_Addr sh_addr;
-  Elf32_Off  sh_offset;
-  Elf32_Word sh_size;
-  Elf32_Word sh_link;
-  Elf32_Word sh_info;
-  Elf32_Word sh_addralign;
-  Elf32_Word sh_entsize;
+	Elf32_Word sh_name;
+	Elf32_Word sh_type;
+	Elf32_Word sh_flags;
+	Elf32_Addr sh_addr;
+	Elf32_Off  sh_offset;
+	Elf32_Word sh_size;
+	Elf32_Word sh_link;
+	Elf32_Word sh_info;
+	Elf32_Word sh_addralign;
+	Elf32_Word sh_entsize;
 } Elf32_Shdr;
 
 typedef struct {                    
-  Elf64_Word sh_name;
-  Elf64_Word sh_type;
-  Elf64_Word sh_flags;
-  Elf64_Addr sh_addr;
-  Elf64_Off  sh_offset;
-  Elf64_Word sh_size;
-  Elf64_Word sh_link;
-  Elf64_Word sh_info;
-  Elf64_Word sh_addralign;
-  Elf64_Word sh_entsize;
+	Elf64_Word sh_name;
+	Elf64_Word sh_type;
+	Elf64_Word sh_flags;
+	Elf64_Addr sh_addr;
+	Elf64_Off  sh_offset;
+	Elf64_Word sh_size;
+	Elf64_Word sh_link;
+	Elf64_Word sh_info;
+	Elf64_Word sh_addralign;
+	Elf64_Word sh_entsize;
 } Elf64_Shdr;
 
 
 typedef struct {
-  Elf32_Word st_name;
-  Elf32_Addr st_value;
-  Elf32_Word st_size;
-  unsigned char st_info;
-  unsigned char st_other;
-  Elf32_Half st_shndx;
+	Elf32_Word st_name;
+	Elf32_Addr st_value;
+	Elf32_Word st_size;
+	unsigned char st_info;
+	unsigned char st_other;
+	Elf32_Half st_shndx;
 } Elf32_Sym;
 
 typedef struct {
-  Elf64_Word st_name;
-  Elf64_Addr st_value;
-  Elf64_Word st_size;
-  unsigned char st_info;
-  unsigned char st_other;
-  Elf64_Half st_shndx;
+	Elf64_Word st_name;
+	Elf64_Addr st_value;
+	Elf64_Word st_size;
+	unsigned char st_info;
+	unsigned char st_other;
+	Elf64_Half st_shndx;
 } Elf64_Sym;
 
 typedef struct {
-  size_t size;
-  unsigned char bytes[];
+	size_t size;
+	unsigned char bytes[];
 } Program; 
 
 
 typedef struct {
-  Elf32_Addr r_offset;
-  Elf32_Word r_info;
+	Elf32_Addr r_offset;
+	Elf32_Word r_info;
 } Elf32_Rel;
 
 typedef struct {
-  Elf64_Addr r_offset;
-  Elf64_Word r_info;
+	Elf64_Addr r_offset;
+	Elf64_Word r_info;
 } Elf64_Rel;
 
 typedef struct {
-  Elf32_Addr r_offset;
-  Elf32_Word r_info;
-  Elf32_Sword r_addend;
+	Elf32_Addr r_offset;
+	Elf32_Word r_info;
+	Elf32_Sword r_addend;
 } Elf32_Rela;
 
 typedef struct {
-  Elf64_Addr r_offset;
-  Elf64_Word r_info;
-  Elf64_Sword r_addend;
+	Elf64_Addr r_offset;
+	Elf64_Word r_info;
+	Elf64_Sword r_addend;
 } Elf64_Rela;
 
 typedef struct {
-  Elf32_Word p_type;
-  Elf32_Off  p_offset;
-  Elf32_Addr p_vaddr;
-  Elf32_Addr p_paddr;
-  Elf32_Word p_filesz;
-  Elf32_Word p_memsz;
-  Elf32_Word p_flags;
-  Elf32_Word p_align;
+	Elf32_Word p_type;
+	Elf32_Off  p_offset;
+	Elf32_Addr p_vaddr;
+	Elf32_Addr p_paddr;
+	Elf32_Word p_filesz;
+	Elf32_Word p_memsz;
+	Elf32_Word p_flags;
+	Elf32_Word p_align;
 } Elf32_Phdr;
 
 typedef struct {
-  Elf64_Word p_type;
-  Elf64_Off p_offset;
-  Elf64_Addr p_vaddr;
-  Elf64_Addr p_paddr;
-  Elf64_Word p_filesz;
-  Elf64_Word p_memsz;
-  Elf64_Word p_flags;
-  Elf64_Word p_align;
+	Elf64_Word p_type;
+	Elf64_Off p_offset;
+	Elf64_Addr p_vaddr;
+	Elf64_Addr p_paddr;
+	Elf64_Word p_filesz;
+	Elf64_Word p_memsz;
+	Elf64_Word p_flags;
+	Elf64_Word p_align;
 } Elf64_Phdr;
 
 typedef struct {
+<<<<<<< HEAD
   Elf32_Ehdr header;
   struct Hentry *hash;
+=======
+	char *name;
+	Elf32_Shdr section;
+	UT_hash_handle hh;
+} Section;
+
+typedef struct {
+	Elf32_Ehdr header;
+	Section *sections;
+>>>>>>> 55bafc812f7eb61d233e84cb9559f0e756055adf
 } Elf32;
 
 int parse_elf_header(Serializable *prg);

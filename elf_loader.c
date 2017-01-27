@@ -9,6 +9,7 @@
 
 int main(int argc, char **argv)
 {
+<<<<<<< HEAD
     FILE *fp;
     size_t size;
     Serializable *ser;
@@ -62,6 +63,7 @@ int main(int argc, char **argv)
 
 int load_32bit(Serializable *prg, Elf32 *elf)
 {
+<<<<<<< HEAD
     Elf32_Ehdr eheader;
     Elf32_Phdr pheader;
     Elf32_Shdr *sections, strtab, text, symtab;
@@ -110,11 +112,12 @@ int load_32bit(Serializable *prg, Elf32 *elf)
 
 char *get_section_name(Serializable *prg, Elf32_Shdr strtab, unsigned long long offset)
 {
-    return prg->bytes + strtab.sh_offset + offset;
+	return prg->bytes + strtab.sh_offset + offset;
 }
 
 Elf32_Shdr *get_section(struct Hentry *hash, char *name)
 {
+<<<<<<< HEAD
     Elf32_Shdr *sect;
     sect = (Elf32_Shdr *)hget(hash, name);
 
@@ -123,88 +126,88 @@ Elf32_Shdr *get_section(struct Hentry *hash, char *name)
 
 int load_32bit_eheader(Serializable *prg, Elf32_Ehdr *eheader)
 {
-    /* Assume data is valid */
-    if(strncmp(ELF_MAGIC, prg->bytes, 4) != 0)
-    { 
-        printf("[-] Error, bad magic number.\n");
-        return -1;
-    }
+	/* Assume data is valid */
+	if(strncmp(ELF_MAGIC, prg->bytes, 4) != 0)
+	{ 
+		printf("[-] Error, bad magic number.\n");
+		return -1;
+	}
 
-    if(prg->bytes[EI_CLASS] != ELFCLASS32)
-    {
-        printf("[-] Error, binary is not 32 bit\n");
-        return -1;
-    }  
+	if(prg->bytes[EI_CLASS] != ELFCLASS32)
+	{
+		printf("[-] Error, binary is not 32 bit\n");
+		return -1;
+	}  
 
-    Element header_elements[] = {
-        create_element(prg->order, *eheader, e_ident),
-        create_element(prg->order, *eheader, e_type),
-        create_element(prg->order, *eheader, e_machine),
-        create_element(prg->order, *eheader, e_version),
-        create_element(prg->order, *eheader, e_entry),
-        create_element(prg->order, *eheader, e_phoff),
-        create_element(prg->order, *eheader, e_shoff),
-        create_element(prg->order, *eheader, e_flags),
-        create_element(prg->order, *eheader, e_ehsize),
-        create_element(prg->order, *eheader, e_phentsize),
-        create_element(prg->order, *eheader, e_phnum),
-        create_element(prg->order, *eheader, e_shentsize),
-        create_element(prg->order, *eheader, e_shnum),
-        create_element(prg->order, *eheader, e_shstrndx)
-    };
+	Element header_elements[] = {
+		create_element(prg->order, *eheader, e_ident),
+		create_element(prg->order, *eheader, e_type),
+		create_element(prg->order, *eheader, e_machine),
+		create_element(prg->order, *eheader, e_version),
+		create_element(prg->order, *eheader, e_entry),
+		create_element(prg->order, *eheader, e_phoff),
+		create_element(prg->order, *eheader, e_shoff),
+		create_element(prg->order, *eheader, e_flags),
+		create_element(prg->order, *eheader, e_ehsize),
+		create_element(prg->order, *eheader, e_phentsize),
+		create_element(prg->order, *eheader, e_phnum),
+		create_element(prg->order, *eheader, e_shentsize),
+		create_element(prg->order, *eheader, e_shnum),
+		create_element(prg->order, *eheader, e_shstrndx)
+	};
 
-    deserialize(prg, header_elements, N_EHEADER);
-    return 0;
+	deserialize(prg, header_elements, N_EHEADER);
+	return 0;
 }
 
 
 int load_32bit_pheader(Serializable *prg, Elf32_Phdr *pheader)
 {
-    if(prg->bytes[EI_CLASS] != ELFCLASS32)
-    {
-        printf("[-] Error, binary is not 32 bit\n");
-        return -1;
-    }
+	if(prg->bytes[EI_CLASS] != ELFCLASS32)
+	{
+		printf("[-] Error, binary is not 32 bit\n");
+		return -1;
+	}
 
-    Element header_elements[] = {
-        create_element(prg->order, *pheader, p_type),
-        create_element(prg->order, *pheader, p_offset),
-        create_element(prg->order, *pheader, p_vaddr),
-        create_element(prg->order, *pheader, p_paddr),
-        create_element(prg->order, *pheader, p_filesz),
-        create_element(prg->order, *pheader, p_memsz),
-        create_element(prg->order, *pheader, p_flags),
-        create_element(prg->order, *pheader, p_align)
-    };
+	Element header_elements[] = {
+		create_element(prg->order, *pheader, p_type),
+		create_element(prg->order, *pheader, p_offset),
+		create_element(prg->order, *pheader, p_vaddr),
+		create_element(prg->order, *pheader, p_paddr),
+		create_element(prg->order, *pheader, p_filesz),
+		create_element(prg->order, *pheader, p_memsz),
+		create_element(prg->order, *pheader, p_flags),
+		create_element(prg->order, *pheader, p_align)
+	};
 
-    deserialize(prg, header_elements, sizeof(header_elements)/sizeof(Element));
-    return 0;
+	deserialize(prg, header_elements, sizeof(header_elements)/sizeof(Element));
+	return 0;
 }
 
 
 int load_32bit_sheader(Serializable *prg, Elf32_Shdr *sheader)
 {
-    if(prg->bytes[EI_CLASS] != ELFCLASS32)
-    {
-        printf("[-] Error, binary is not 32 bit\n");
-        return -1;
-    }
+	if(prg->bytes[EI_CLASS] != ELFCLASS32)
+	{
+		printf("[-] Error, binary is not 32 bit\n");
+		return -1;
+	}
 
-    Element header_elements[] = {
-        create_element(prg->order, *sheader, sh_name),
-        create_element(prg->order, *sheader, sh_type),
-        create_element(prg->order, *sheader, sh_flags),
-        create_element(prg->order, *sheader, sh_addr),
-        create_element(prg->order, *sheader, sh_offset),
-        create_element(prg->order, *sheader, sh_size),
-        create_element(prg->order, *sheader, sh_link),
-        create_element(prg->order, *sheader, sh_info),
-        create_element(prg->order, *sheader, sh_addralign),
-        create_element(prg->order, *sheader, sh_entsize)
-    };
+	Element header_elements[] = {
+		create_element(prg->order, *sheader, sh_name),
+		create_element(prg->order, *sheader, sh_type),
+		create_element(prg->order, *sheader, sh_flags),
+		create_element(prg->order, *sheader, sh_addr),
+		create_element(prg->order, *sheader, sh_offset),
+		create_element(prg->order, *sheader, sh_size),
+		create_element(prg->order, *sheader, sh_link),
+		create_element(prg->order, *sheader, sh_info),
+		create_element(prg->order, *sheader, sh_addralign),
+		create_element(prg->order, *sheader, sh_entsize)
+	};
 
-    deserialize(prg, header_elements, sizeof(header_elements)/sizeof(Element));
-    return 0;
+	deserialize(prg, header_elements, sizeof(header_elements)/sizeof(Element));
+	return 0;
 }
 
 
