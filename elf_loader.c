@@ -9,7 +9,6 @@
 
 int main(int argc, char **argv)
 {
-<<<<<<< HEAD
     FILE *fp;
     size_t size;
     Serializable *ser;
@@ -63,7 +62,6 @@ int main(int argc, char **argv)
 
 int load_32bit(Serializable *prg, Elf32 *elf)
 {
-<<<<<<< HEAD
     Elf32_Ehdr eheader;
     Elf32_Phdr pheader;
     Elf32_Shdr *sections, strtab, text, symtab;
@@ -117,7 +115,6 @@ char *get_section_name(Serializable *prg, Elf32_Shdr strtab, unsigned long long 
 
 Elf32_Shdr *get_section(struct Hentry *hash, char *name)
 {
-<<<<<<< HEAD
     Elf32_Shdr *sect;
     sect = (Elf32_Shdr *)hget(hash, name);
 

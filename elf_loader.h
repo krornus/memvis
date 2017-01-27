@@ -181,19 +181,8 @@ typedef struct {
 } Elf64_Phdr;
 
 typedef struct {
-<<<<<<< HEAD
   Elf32_Ehdr header;
   struct Hentry *hash;
-=======
-	char *name;
-	Elf32_Shdr section;
-	UT_hash_handle hh;
-} Section;
-
-typedef struct {
-	Elf32_Ehdr header;
-	Section *sections;
->>>>>>> 55bafc812f7eb61d233e84cb9559f0e756055adf
 } Elf32;
 
 int parse_elf_header(Serializable *prg);
