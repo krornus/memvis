@@ -1,4 +1,5 @@
 #include <stdio.h>
+
 #ifndef SEEK_SET
 #define SEEK_SET 0
 #endif
@@ -43,4 +44,5 @@ void deserialize(Serializable *ser, Element *values, int length);
 void srewind(Serializable *ser);
 void sseek(Serializable *ser, long amount, int whence);
 int smap(char *fn, Serializable *ser);
+int sunmap(Serializable *ser);
 size_t fsize(FILE *fp);

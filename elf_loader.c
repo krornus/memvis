@@ -55,16 +55,18 @@ int main(int argc, char **argv)
         printf("%01x", (unsigned char)ser->bytes[i]);
     }
 
-    /* TODO Implement sunmap function to unmap the serializable data */
-    free(elf32);
+    sunmap(ser);
+    destroy_32bit(elf32);
+    
     free(ser);
+    free(elf32);
 }
 
 int load_32bit(Serializable *prg, Elf32 *elf)
 {
     Elf32_Ehdr eheader;
     Elf32_Phdr pheader;
-    Elf32_Shdr *sections, strtab, text, symtab;
+    Elf32_Shdr strtab;
 
     /* Must set dict to null */
     elf->hash = NULL;
@@ -85,27 +87,31 @@ int load_32bit(Serializable *prg, Elf32 *elf)
     /* Get section headers */
     sseek(prg, eheader.e_shoff, SEEK_SET);
 
-    /* TODO Change, currently a memory leak */
-    sections = (Elf32_Shdr *)malloc(sizeof(Elf32_Shdr) * eheader.e_shnum);
+    elf->sheaders = (Elf32_Shdr *)malloc(sizeof(Elf32_Shdr) * eheader.e_shnum);
 
     for(int i = 0; i < eheader.e_shnum; i++)
     {
-        load_32bit_sheader(prg, sections + i); 
+        load_32bit_sheader(prg, elf->sheaders + i); 
     }
 
     /* Load string table */
-    strtab = sections[eheader.e_shstrndx];
+    strtab = elf->sheaders[eheader.e_shstrndx];
 
     /* Loop through sections */
     for(int i = 0; i < eheader.e_shnum; i++)
     {
         char *name;
-        name = get_section_name(prg, strtab, sections[i].sh_name);
-        hset(&elf->hash, name, sections+i);
+        name = get_section_name(prg, strtab, elf->sheaders[i].sh_name);
+        hset(&elf->hash, name, elf->sheaders+i);
     }
 
 
     return 0;
+}
+
+void destroy_32bit(Elf32 *elf)
+{
+    free(elf->sheaders);
 }
 
 char *get_section_name(Serializable *prg, Elf32_Shdr strtab, unsigned long long offset)

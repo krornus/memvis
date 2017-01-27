@@ -188,7 +188,6 @@ typedef struct {
 
 int parse_elf_header(Serializable *prg);
 int load_32bit(Serializable *prg, Elf32 *elf);
-void destroy_32bit(Elf32 *elf);
 int load_32bit_eheader(Serializable *prg, Elf32_Ehdr *eheader);
 int load_32bit_pheader(Serializable *prg, Elf32_Phdr *pheader);
 int load_32bit_sheader(Serializable *prg, Elf32_Shdr *sheader);

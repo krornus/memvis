@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 
-
+size_t data_length;
 
 void deserialize(Serializable *ser, Element *values, int length)
 {
@@ -97,13 +97,15 @@ int smap(char* fn, Serializable *ser)
         return -1;
     }
 
+    ser->len = (int)sb.st_size;
+
     if(!S_ISREG(sb.st_mode)) 
     {
         fprintf(stderr, "invalid file: %s\n", fn);
         return -1;
     }
     
-    ser->bytes = mmap(0, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+    ser->bytes = mmap(0, ser->len, PROT_READ, MAP_PRIVATE, fd, 0);
     
     if(MAP_FAILED == ser->bytes)
     {
@@ -117,7 +119,6 @@ int smap(char* fn, Serializable *ser)
         return -1;
     }
 
-    ser->len = (int)sb.st_mode; 
     ser->offset = 0;
     
     /* default to little endian */
@@ -128,6 +129,7 @@ int smap(char* fn, Serializable *ser)
 
 int sunmap(Serializable *ser)
 {
+    return munmap(ser->bytes, ser->len);
 }
 
 size_t fsize(FILE *fp)
