@@ -113,6 +113,7 @@ int load_32bit(Serializable *prg, Elf32 *elf)
 
     /* Load string table */
     strtab_header = elf->sheaders[eheader.e_shstrndx];
+    printf("strtab is at %lu\n",elf->sheaders + eheader.e_shstrndx);
 
     /* Loop through sections */
     for(int i = 0; i < eheader.e_shnum; i++)
@@ -134,28 +135,16 @@ int load_32bit(Serializable *prg, Elf32 *elf)
         /* Seek to symtab offset */
         sseek(prg, symtab_header->sh_offset, SEEK_SET);
         
-        /* TODO: Better way to do this? */
-        load_32bit_sym(prg, &sym);
-
         /* Get the number of symbols */
-        nsym = symtab_header->sh_size / (prg->offset - symtab_header->sh_offset);
+        nsym = symtab_header->sh_size / symtab_header->sh_entsize;
         elf->symbols = (Elf32_Sym *) malloc(sizeof(Elf32_Sym)*nsym);
-
-        printf("There are %lu symbols\n", nsym);
-
-        sseek(prg, symtab_header->sh_offset, SEEK_SET);
 
         for(int i = 0; i < nsym; i++)
         {
             load_32bit_sym(prg, elf->symbols + i);
-            printf("%d\n", prg->bytes);
-            for(int j = 0; j < 16; j++)
-            {
-                printf("%c", prg->bytes+prg->offset+j);
-            }
             if(elf->symbols[i].st_name!=0)
             {
-                printf("Loaded symbol '%s', name at %lu\n", get_name(prg, strtab_header, elf->symbols[i].st_name), elf->symbols[i].st_name + symtab_header->sh_name);
+                printf("Loaded symbol '%s', name at %lu\n", get_name(prg, elf->sheaders[symtab_header->sh_link], elf->symbols[i].st_name), elf->symbols[i].st_name);
             }
         }
     }
@@ -170,7 +159,7 @@ void destroy_32bit(Elf32 *elf)
 
 char *get_name(Serializable *prg, Elf32_Shdr strtab, unsigned long long offset)
 {
-    printf("in get_name: %d\n", prg->bytes);
+    printf("in get_name: %lu\n", prg->bytes);
 	return prg->bytes + strtab.sh_offset + offset;
 }
 
