@@ -68,7 +68,7 @@ void sseek(Serializable *ser, long amount, int whence)
             ser->offset = amount;
             break;
         case SEEK_CUR:
-            if (ser->offset + amount < ser-> len)
+            if (ser->offset + amount < ser->len)
                 ser->offset += amount;
             break;
         case SEEK_END:

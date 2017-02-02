@@ -119,7 +119,6 @@ int load_32bit(Serializable *prg, Elf32 *elf)
     {
         char *name;
         name = get_name(prg, strtab_header, elf->sheaders[i].sh_name);
-        printf("Loaded section '%s'\n", name);
         hset(&elf->hash, name, elf->sheaders+i);
     }
 
@@ -129,7 +128,6 @@ int load_32bit(Serializable *prg, Elf32 *elf)
     if(symtab_header==NULL)
     {
         fprintf(stderr, "No symbol table in binary\n");
-        return -1;
     }
     else
     {
@@ -150,11 +148,18 @@ int load_32bit(Serializable *prg, Elf32 *elf)
         for(int i = 0; i < nsym; i++)
         {
             load_32bit_sym(prg, elf->symbols + i);
+            printf("%d\n", prg->bytes);
+            for(int j = 0; j < 16; j++)
+            {
+                printf("%c", prg->bytes+prg->offset+j);
+            }
             if(elf->symbols[i].st_name!=0)
-                printf("Loaded symbol '%s'\n", get_name(prg, strtab_header, elf->symbols[i].st_name));
+            {
+                printf("Loaded symbol '%s', name at %lu\n", get_name(prg, strtab_header, elf->symbols[i].st_name), elf->symbols[i].st_name + symtab_header->sh_name);
+            }
         }
     }
-
+    
     return 0;
 }
 
@@ -165,6 +170,7 @@ void destroy_32bit(Elf32 *elf)
 
 char *get_name(Serializable *prg, Elf32_Shdr strtab, unsigned long long offset)
 {
+    printf("in get_name: %d\n", prg->bytes);
 	return prg->bytes + strtab.sh_offset + offset;
 }
 
