@@ -51,12 +51,28 @@ int main(int argc, char **argv)
     {
         if(i % 10 == 0 && i > 0)
         {
-            //printf("\n");
+            printf("\n");
         }
 
-        //printf("%01x", (unsigned char)ser->bytes[i]);
+        printf("%01x", (unsigned char)ser->bytes[i]);
     }
     /****** END .TEXT SECTION *******/
+    
+    /****** .BSS SECTION ***********/
+    Elf32_Shdr *bss = get_section(elf32->hash, ".bss");
+
+    if(NULL==bss)
+    {
+        fprintf(stderr, "could not load .bss seciont");
+        exit(-1);
+    }
+    printf("printing bss:\n");
+    for(int i = bss->sh_offset; i < bss + bss->sh_size; i++)
+    {
+        printf("%X",i);
+        break;
+    }
+
 
     /******** SYMTAB *********/
     Elf32_Shdr *symtab_header = get_section(elf32->hash, ".symtab");

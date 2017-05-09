@@ -1,0 +1,125 @@
+Entry point: 0x400400
+0x400400:	xor	ebp, ebp	
+0x400402:	mov	r9, rdx	
+0x400405:	pop	rsi	
+0x400406:	mov	rdx, rsp	
+0x400409:	and	rsp, 0xfffffffffffffff0	
+0x40040d:	push	rax	
+0x40040e:	push	rsp	
+0x40040f:	mov	r8, 0x4005a0	
+0x400416:	mov	rcx, 0x400530	
+0x40041d:	mov	rdi, 0x4004f6	
+0x400424:	call	qword ptr [rip + 0x200bc6]	
+0x40042a:	hlt		
+0x40042b:	nop	dword ptr [rax + rax]	
+0x400430:	mov	eax, 0x601037	
+0x400435:	push	rbp	
+0x400436:	sub	rax, 0x601030	
+0x40043c:	cmp	rax, 0xe	
+0x400440:	mov	rbp, rsp	
+0x400443:	jbe	0x400460	
+0x400445:	mov	eax, 0	
+0x40044a:	test	rax, rax	
+0x40044d:	je	0x400460	
+0x40044f:	pop	rbp	
+0x400450:	mov	edi, 0x601030	
+0x400455:	jmp	rax	
+0x400457:	nop	word ptr [rax + rax]	
+0x400460:	pop	rbp	
+0x400461:	ret		
+0x400462:	nop	dword ptr [rax]	
+0x400466:	nop	word ptr cs:[rax + rax]	
+0x400470:	mov	esi, 0x601030	
+0x400475:	push	rbp	
+0x400476:	sub	rsi, 0x601030	
+0x40047d:	sar	rsi, 3	
+0x400481:	mov	rbp, rsp	
+0x400484:	mov	rax, rsi	
+0x400487:	shr	rax, 0x3f	
+0x40048b:	add	rsi, rax	
+0x40048e:	sar	rsi, 1	
+0x400491:	je	0x4004a8	
+0x400493:	mov	eax, 0	
+0x400498:	test	rax, rax	
+0x40049b:	je	0x4004a8	
+0x40049d:	pop	rbp	
+0x40049e:	mov	edi, 0x601030	
+0x4004a3:	jmp	rax	
+0x4004a5:	nop	dword ptr [rax]	
+0x4004a8:	pop	rbp	
+0x4004a9:	ret		
+0x4004aa:	nop	word ptr [rax + rax]	
+0x4004b0:	cmp	byte ptr [rip + 0x200b79], 0	
+0x4004b7:	jne	0x4004ca	
+0x4004b9:	push	rbp	
+0x4004ba:	mov	rbp, rsp	
+0x4004bd:	call	0x400430	
+0x4004c2:	pop	rbp	
+0x4004c3:	mov	byte ptr [rip + 0x200b66], 1	
+0x4004ca:	ret		
+0x4004cc:	nop	dword ptr [rax]	
+0x4004d0:	mov	edi, 0x600e18	
+0x4004d5:	cmp	qword ptr [rdi], 0	
+0x4004d9:	jne	0x4004e0	
+0x4004db:	jmp	0x400470	
+0x4004dd:	nop	dword ptr [rax]	
+0x4004e0:	mov	eax, 0	
+0x4004e5:	test	rax, rax	
+0x4004e8:	je	0x4004db	
+0x4004ea:	push	rbp	
+0x4004eb:	mov	rbp, rsp	
+0x4004ee:	call	rax	
+0x4004f0:	pop	rbp	
+0x4004f1:	jmp	0x400470	
+0x4004f6:	push	rbp	
+0x4004f7:	mov	rbp, rsp	
+0x4004fa:	sub	rsp, 0x40	
+0x4004fe:	lea	rax, qword ptr [rbp - 0x40]	
+0x400502:	mov	dword ptr [rax], 0x2d20736c	
+0x400508:	mov	word ptr [rax + 4], 0x6c	
+0x40050e:	lea	rax, qword ptr [rbp - 0x40]	
+0x400512:	mov	rdi, rax	
+0x400515:	mov	eax, 0	
+0x40051a:	call	0x4003f0	
+0x40051f:	nop		
+0x400520:	leave		
+0x400521:	ret		
+0x400522:	nop	word ptr cs:[rax + rax]	
+0x40052c:	nop	dword ptr [rax]	
+0x400530:	push	r15	
+0x400532:	push	r14	
+0x400534:	mov	r15d, edi	
+0x400537:	push	r13	
+0x400539:	push	r12	
+0x40053b:	lea	r12, qword ptr [rip + 0x2008c6]	
+0x400542:	push	rbp	
+0x400543:	lea	rbp, qword ptr [rip + 0x2008c6]	
+0x40054a:	push	rbx	
+0x40054b:	mov	r14, rsi	
+0x40054e:	mov	r13, rdx	
+0x400551:	sub	rbp, r12	
+0x400554:	sub	rsp, 8	
+0x400558:	sar	rbp, 3	
+0x40055c:	call	0x4003c8	
+0x400561:	test	rbp, rbp	
+0x400564:	je	0x400586	
+0x400566:	xor	ebx, ebx	
+0x400568:	nop	dword ptr [rax + rax]	
+0x400570:	mov	rdx, r13	
+0x400573:	mov	rsi, r14	
+0x400576:	mov	edi, r15d	
+0x400579:	call	qword ptr [r12 + rbx*8]	
+0x40057d:	add	rbx, 1	
+0x400581:	cmp	rbp, rbx	
+0x400584:	jne	0x400570	
+0x400586:	add	rsp, 8	
+0x40058a:	pop	rbx	
+0x40058b:	pop	rbp	
+0x40058c:	pop	r12	
+0x40058e:	pop	r13	
+0x400590:	pop	r14	
+0x400592:	pop	r15	
+0x400594:	ret		
+0x400595:	nop		
+0x400596:	nop	word ptr cs:[rax + rax]	
+0x4005a0:	ret		
