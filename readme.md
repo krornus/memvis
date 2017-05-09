@@ -41,3 +41,5 @@ Tool for interfacing with ELF files
   
     deserialize(prg, header_elements, N_EHEADER);
 ```
+
+usage: ./elfldr --file|-f <filename> --section|-s <section_name> 

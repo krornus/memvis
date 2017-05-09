@@ -2,9 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <getopt.h>
+#include <unistd.h>
+
 #include "hash.h"
 #include "deserialize.h"
 #include "elf_loader.h"
+
+#define ARGSIZE 1024
 
 
 int main(int argc, char **argv)
@@ -14,17 +19,57 @@ int main(int argc, char **argv)
     Serializable *ser;
     Elf32 *elf32;
 
-    if(argc != 2)
-    {
-        printf("Usage: ./elf-loader <file>\n");
-        return -1;
+    char fn[ARGSIZE] = {0};
+    char section[ARGSIZE] = {0};
+
+    while (1) {
+
+        int opt_idx = 0;
+        char c = 0;
+
+        static struct option long_opts[] = {
+            {"file", required_argument, 0, 'f'},
+            {"section", required_argument, 0, 's'},
+            {0, 0, 0, 0}
+        };
+
+        c = getopt_long(argc, argv, "f:s:", long_opts, &opt_idx);
+
+        if (c == -1)
+            break;
+
+        switch(c) {
+            case 0:
+                break;
+            case 'f':
+                if(access(optarg, R_OK) != 0){
+                    fprintf(stderr, "could not access file '%s' for reading.\n", optarg);
+                    exit(1);
+                }
+                if(strlen(optarg) >= ARGSIZE) {
+                    fprintf(stderr, "file name too large.\n");
+                    exit(1);
+                }
+                strcpy(fn, optarg);
+                break;
+            case 's':
+                if(strlen(optarg) >= ARGSIZE) {
+                    fprintf(stderr, "section name too large.\n");
+                    exit(1);
+                }
+                strcpy(section, optarg);
+                break;
+            case '?':
+                printf("usage\n");
+                break;
+        }
     }
 
     ser = (Serializable *) malloc(sizeof(Serializable));
 
-    if(0 != smap(argv[1], ser))
+    if(0 != smap(fn, ser))
     {
-        fprintf(stderr, "failed to map %s\n", argv[1]);
+        fprintf(stderr, "failed to map %s\n", fn);
         return -1;
     }
 
@@ -39,52 +84,23 @@ int main(int argc, char **argv)
 
 
     /******** .TEXT SECTION *********/
-    Elf32_Shdr *text = get_section(elf32->hash, ".text");
+    Elf32_Shdr *shdr = get_section(elf32->hash, section);
 
-    if(NULL==text)
+    if(NULL==shdr)
     {
-        fprintf(stderr, "could not load section\n");
+        fprintf(stderr, "could not load section '%s'\n", section);
         exit(-1);
     }
 
-    for(int i = text->sh_offset; i < text->sh_offset + text->sh_size; i++)
+    for(int i = shdr->sh_offset; i < shdr->sh_offset + shdr->sh_size; i++)
     {
         if(i % 10 == 0 && i > 0)
         {
             printf("\n");
         }
-
         printf("%01x", (unsigned char)ser->bytes[i]);
     }
     /****** END .TEXT SECTION *******/
-    
-    /****** .BSS SECTION ***********/
-    Elf32_Shdr *bss = get_section(elf32->hash, ".bss");
-
-    if(NULL==bss)
-    {
-        fprintf(stderr, "could not load .bss seciont");
-        exit(-1);
-    }
-    printf("printing bss:\n");
-    for(int i = bss->sh_offset; i < bss + bss->sh_size; i++)
-    {
-        printf("%X",i);
-        break;
-    }
-
-
-    /******** SYMTAB *********/
-    Elf32_Shdr *symtab_header = get_section(elf32->hash, ".symtab");
-
-    if(NULL==text)
-    {
-        fprintf(stderr, "could not load section\n");
-        exit(-1);
-    }
-
-
-    /****** END SYMTAB .*******/ 
     
     sunmap(ser);
     destroy_32bit(elf32);
@@ -135,7 +151,6 @@ int load_32bit(Serializable *prg, Elf32 *elf)
     {
         char *name;
         name = get_name(prg, strtab_header, elf->sheaders[i].sh_name);
-        printf("Loaded section '%s'\n", name);
         hset(&elf->hash, name, elf->sheaders+i);
     }
 
@@ -145,32 +160,28 @@ int load_32bit(Serializable *prg, Elf32 *elf)
     if(symtab_header==NULL)
     {
         fprintf(stderr, "No symbol table in binary\n");
-        return -1;
     }
     else
     {
         /* Seek to symtab offset */
         sseek(prg, symtab_header->sh_offset, SEEK_SET);
         
-        /* TODO: Better way to do this? */
-        load_32bit_sym(prg, &sym);
-
         /* Get the number of symbols */
-        nsym = symtab_header->sh_size / (prg->offset - symtab_header->sh_offset);
+        nsym = symtab_header->sh_size / symtab_header->sh_entsize;
         elf->symbols = (Elf32_Sym *) malloc(sizeof(Elf32_Sym)*nsym);
-
-        printf("There are %lu symbols\n", nsym);
-
-        sseek(prg, symtab_header->sh_offset, SEEK_SET);
 
         for(int i = 0; i < nsym; i++)
         {
             load_32bit_sym(prg, elf->symbols + i);
             if(elf->symbols[i].st_name!=0)
-                printf("Loaded symbol '%s'\n", get_name(prg, strtab_header, elf->symbols[i].st_name));
+            {
+                printf("Loaded symbol '%s', name at %lu\n", get_name(prg, elf->sheaders[symtab_header->sh_link], elf->symbols[i].st_name), elf->symbols[i].st_name);
+            }
         }
-    }
 
+        printf("\n\n");
+    }
+    
     return 0;
 }
 
