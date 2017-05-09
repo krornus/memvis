@@ -79,3 +79,7 @@ Python directory contains:
         description: Beginnings of a yara rule file tailored to elf analysis.
         usage: see yara usage command line usage.
         info: Yara has a builin api for accessing information for elf files.  
+
+#### Database ####
+In the database directory you will find some screenshots and the database file itself.
+The database contains instruction information extracted from the binary and references to the column names. 
